@@ -1,4 +1,4 @@
-import PDFExposer from './pdf';
+import PDFExposer from './pdf-exposer';
 
 const pdfExposer = new PDFExposer();
 (async () => {
