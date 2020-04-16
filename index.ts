@@ -1,7 +1,5 @@
 import PDFParser, { Text } from 'pdf2json';
 
-const pdfParser = new PDFParser();
-
 const color = {
     '0': 'black' as const,
     '1': 'invisible' as const,
@@ -18,13 +16,13 @@ interface TextGroup {
     texts: string[];
 }
 
-const createTextGroups = (texts: Text[]): TextGroup[]=> {
+const createTextGroups = (texts: Text[]): TextGroup[] => {
     let groups: TextGroup[] = [];
     let lastColorName: ColorName | undefined | null = null;
     for (const text of texts) {
         const textColorNumberString = text.clr.toString();
         const textColorName = isKnownColorNumberString(textColorNumberString) ? color[textColorNumberString] : undefined;
-        const textString = text.R.map(textRun => decodeURIComponent(textRun.T)).join();
+        const textString = text.R.map(textRun => decodeURIComponent(textRun.T)).join('');
         if (textColorName === lastColorName) {
             groups[groups.length - 1].texts.push(textString);
         } else {
@@ -38,12 +36,23 @@ const createTextGroups = (texts: Text[]): TextGroup[]=> {
     return groups;
 };
 
+const generateInvisibilityEmphasisMarkdown = (textgroups: TextGroup[]) => {
+    let strings: string[] = textgroups.map(group =>
+            group.color === 'invisible'
+                ? `**${group.texts.join('')}**`
+                : group.texts.join('')
+        );
+    console.log(strings.join(' ') + '\n');
+};
+
+const pdfParser = new PDFParser();
+
 pdfParser.on('pdfParser_dataReady', pdfData => {
     const pages = pdfData.formImage.Pages;
     for (const [i, page] of pages.entries()) {
-        console.log(`Page ${i+1}:`);
+        console.log(`## Page ${i+1}:\n`);
         const groups = createTextGroups(page.Texts);
-        console.log(groups);
+        generateInvisibilityEmphasisMarkdown(groups);
     }
 });
 
