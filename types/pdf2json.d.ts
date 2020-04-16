@@ -53,6 +53,7 @@ declare module 'pdf2json' {
         TS: [number, number, number, number]; // [fontFaceId, fontSize, 1/0 for bold, 1/0 for italic]
     }
     export default class PDFParser extends EventEmitter {
+        setPassword(password: string): void;
         loadPDF(path: string): void;
         on(event: 'pdfParser_dataReady', listener: (data: PDFData) => void): this;
         on(event: 'pdfParser_dataError', listener: (data: any) => void): this;

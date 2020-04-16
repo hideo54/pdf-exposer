@@ -51,7 +51,7 @@ export default class PDFExposer {
         this.textGroupsArray = [];
     }
 
-    init(path: string) {
+    init(path: string, password?: string) {
         return new Promise<void>((resolve, reject) => {
             const pdfParser = new PDFParser();
             pdfParser.on('pdfParser_dataReady', pdfData => {
@@ -61,6 +61,7 @@ export default class PDFExposer {
                 resolve();
             });
             pdfParser.on('pdfParser_dataError', errorData => reject(errorData));
+            if (password) pdfParser.setPassword(password);
             pdfParser.loadPDF(path);
         });
     }
