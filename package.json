@@ -1,19 +1,24 @@
 {
   "name": "pdf-exposer",
   "version": "1.0.0",
-  "description": "",
-  "main": "pdf.js",
+  "description": "Extracts text groups from given PDF file.",
+  "main": "./dist/pdf-exposer.js",
+  "types": "./dist/pdf-exposer.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": "git://github.com/hideo54/pdf-exposer.git",
   "author": "hideo54",
   "license": "MIT",
   "dependencies": {
-    "pdf2json": "^1.2.0",
-    "typescript": "^3.8.3"
+    "pdf2json": "^1.2.0"
   },
   "devDependencies": {
-    "@types/node": "^13.11.1"
+    "@types/node": "^13.11.1",
+    "typescript": "^3.8.3"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   }
 }
