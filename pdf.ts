@@ -45,10 +45,9 @@ const generateInvisibilityEmphasisMarkdown = (textgroups: TextGroup[]) => {
     return strings.join(' ');
 };
 
-const pdfParser = new PDFParser();
-
 export const generateMarkdownFromPDF = (path: string) => (
     new Promise<string>(resolve => {
+        const pdfParser = new PDFParser();
         pdfParser.on('pdfParser_dataReady', pdfData => {
             const pages = pdfData.formImage.Pages;
             let markdown = '';
