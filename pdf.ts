@@ -11,7 +11,7 @@ type ColorNumber = keyof typeof color;
 type ColorName = typeof color[ColorNumber];
 const isKnownColorNumberString = (n: string): n is ColorNumber => color.hasOwnProperty(n);
 
-interface TextGroup {
+export interface TextGroup {
     color: ColorName | undefined;
     texts: string[];
 }
@@ -36,29 +36,52 @@ const createTextGroups = (texts: Text[]): TextGroup[] => {
     return groups;
 };
 
-const generateInvisibilityEmphasisMarkdown = (textgroups: TextGroup[]) => {
-    let strings: string[] = textgroups.map(group =>
-            group.color === 'invisible'
-                ? `**${group.texts.join('')}**`
-                : group.texts.join('')
-        );
-    return strings.join(' ');
-};
+interface GenerateMarkdownOptions {
+    emphasizesInvisibleTexts: boolean;
+}
 
-export const generateMarkdownFromPDF = (path: string) => (
-    new Promise<string>(resolve => {
-        const pdfParser = new PDFParser();
-        pdfParser.on('pdfParser_dataReady', pdfData => {
-            const pages = pdfData.formImage.Pages;
-            let markdown = '';
-            for (const [i, page] of pages.entries()) {
-                markdown += `## Page ${i+1}:\n\n`;
-                const groups = createTextGroups(page.Texts);
-                const newMD = generateInvisibilityEmphasisMarkdown(groups);
-                markdown += newMD + '\n\n';
-            }
-            resolve(markdown);
+export default class PDFExposer {
+    private isInitializationDone: boolean;
+    pdfParser: PDFParser;
+    textGroupsArray: TextGroup[][];
+
+    constructor() {
+        this.isInitializationDone = false;
+        this.pdfParser = new PDFParser();
+        this.textGroupsArray = [];
+    }
+
+    init(path: string) {
+        return new Promise<void>((resolve, reject) => {
+            const pdfParser = new PDFParser();
+            pdfParser.on('pdfParser_dataReady', pdfData => {
+                const pages = pdfData.formImage.Pages;
+                this.textGroupsArray = pages.map(page => createTextGroups(page.Texts));
+                this.isInitializationDone = true;
+                resolve();
+            });
+            pdfParser.on('pdfParser_dataError', errorData => reject(errorData));
+            pdfParser.loadPDF(path);
         });
-        pdfParser.loadPDF(path);
-    })
-);
+    }
+
+    generateMarkdown(options: GenerateMarkdownOptions = {
+        emphasizesInvisibleTexts: false,
+    }) {
+        if (this.isInitializationDone) {
+            let markdown = '';
+            for (const [i, textGroups] of this.textGroupsArray.entries()) {
+                markdown += `## Page ${i+1}:\n\n`;
+                const strings = textGroups.map(group =>
+                    options.emphasizesInvisibleTexts && group.color === 'invisible'
+                        ? ` **${group.texts.join('')}** `
+                        : group.texts.join('')
+                );
+                markdown += strings.join('') + '\n\n';
+            }
+            return markdown;
+        } else {
+            throw 'Please run init() method first.';
+        }
+    }
+}

@@ -55,5 +55,6 @@ declare module 'pdf2json' {
     export default class PDFParser extends EventEmitter {
         loadPDF(path: string): void;
         on(event: 'pdfParser_dataReady', listener: (data: PDFData) => void): this;
+        on(event: 'pdfParser_dataError', listener: (data: any) => void): this;
     }
 }

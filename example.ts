@@ -1,6 +1,10 @@
-import { generateMarkdownFromPDF } from './pdf';
+import PDFExposer from './pdf';
 
+const pdfExposer = new PDFExposer();
 (async () => {
-    const md = await generateMarkdownFromPDF('./sample.pdf');
+    await pdfExposer.init('./sample.pdf');
+    const md = pdfExposer.generateMarkdown({
+        emphasizesInvisibleTexts: true
+    });
     console.log(md);
 })();
