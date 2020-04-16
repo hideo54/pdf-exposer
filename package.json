@@ -9,6 +9,10 @@
   "author": "hideo54",
   "license": "MIT",
   "dependencies": {
+    "pdf2json": "^1.2.0",
     "typescript": "^3.8.3"
+  },
+  "devDependencies": {
+    "@types/node": "^13.11.1"
   }
 }
