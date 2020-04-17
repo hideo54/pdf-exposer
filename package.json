@@ -1,11 +1,12 @@
 {
   "name": "@hideo54/pdf-exposer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Extracts text groups from given PDF file.",
-  "main": "./dist/pdf-exposer.js",
-  "types": "./dist/pdf-exposer.d.ts",
+  "main": "dist/pdf-exposer.js",
+  "types": "dist/pdf-exposer.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "prepublishOnly": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": "git://github.com/hideo54/pdf-exposer.git",
