@@ -4,7 +4,6 @@ import { KnownBlock, SectionBlock } from '@slack/web-api';
 const color = {
     '0': 'black' as const,
     '1': 'invisible' as const,
-    '-1': 'invisible' as const,
     '24': 'red' as const,
     '35': 'blue' as const,
 };
@@ -21,7 +20,7 @@ const createTextGroups = (texts: Text[]): TextGroup[] => {
     let groups: TextGroup[] = [];
     let lastColorName: ColorName | undefined | null = null;
     for (const text of texts) {
-        const textColorNumberString = text.clr.toString();
+        const textColorNumberString = Math.abs(text.clr).toString();
         const textColorName = isKnownColorNumberString(textColorNumberString) ? color[textColorNumberString] : undefined;
         const textString = text.R.map(textRun => decodeURIComponent(textRun.T)).join('');
         if (textColorName === lastColorName) {
