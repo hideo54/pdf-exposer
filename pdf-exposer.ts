@@ -1,4 +1,5 @@
 import PDFParser, { Text } from 'pdf2json';
+import { KnownBlock, SectionBlock } from '@slack/web-api';
 
 const color = {
     '0': 'black' as const,
@@ -36,7 +37,7 @@ const createTextGroups = (texts: Text[]): TextGroup[] => {
     return groups;
 };
 
-interface GenerateMarkdownOptions {
+interface GenerationOptions {
     emphasizesInvisibleTexts: boolean;
 }
 
@@ -66,7 +67,7 @@ export default class PDFExposer {
         });
     }
 
-    generateMarkdown(options: GenerateMarkdownOptions = {
+    generateMarkdown(options: GenerationOptions = {
         emphasizesInvisibleTexts: false,
     }) {
         if (this.isInitializationDone) {
@@ -81,8 +82,32 @@ export default class PDFExposer {
                 markdown += strings.join('') + '\n\n';
             }
             return markdown;
-        } else {
-            throw 'Please run init() method first.';
         }
+        throw 'Please run init() method first.';
+    }
+
+    generateSlackBlocks(options: GenerationOptions = {
+        emphasizesInvisibleTexts: false,
+    }) {
+        if (this.isInitializationDone) {
+            const blocks: KnownBlock[] = [];
+            for (const [i, textGroups] of this.textGroupsArray.entries()) {
+                const strings = textGroups.map(group =>
+                    options.emphasizesInvisibleTexts && group.color === 'invisible'
+                        ? ` *${group.texts.join('')}* `
+                        : group.texts.join('')
+                );
+                const block: SectionBlock = ({
+                    type: 'section',
+                    text: {
+                        type: 'mrkdwn',
+                        text: `*${i+1}ページ目*\n${strings.join('')}`,
+                    },
+                });
+                blocks.push(block);
+            }
+            return blocks;
+        }
+        throw 'Please run init() method first.';
     }
 }
