@@ -12,9 +12,38 @@ import PDFExposer from 'pdf-exposer';
 const pdfExposer = new PDFExposer();
 (async () => {
     await pdfExposer.init('./sample.pdf', 'password'); // Password is optional
-    const md = pdfExposer.generateMarkdown({
-        emphasizesInvisibleTexts: true, // You can omit this options object. Default: false
-    });
-    console.log(md);
+    const text = pdfExposer.generateText({
+        emphasizesInvisibleTexts: true,
+        format: 'markdown',
+    }); // You can omit this options object.
+    console.log(text);
 })();
 ```
+
+### init(path[, password])
+
+### generateText(options)
+
+Returns text (`string`).
+
+#### Options:
+
+##### `emphasizesInvisibleTexts`
+
+boolean. Default: `false`
+
+#### `format`
+
+`'markdown'` or `'scrapbox'`. Default: `'markdown'`
+
+### generateSlackBlocks(options)
+
+Returns blocks array (`KnownBlock[]`, which is a type provided by [`@slack/web-api`](https://github.com/slackapi/node-slack-sdk)).
+
+You can directly pass these blocks to the methods provided by Slack's SDK.
+
+#### Options:
+
+##### `emphasizesInvisibleTexts`
+
+boolean. Default: `false`
