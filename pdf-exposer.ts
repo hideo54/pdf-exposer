@@ -38,6 +38,7 @@ const createTextGroups = (texts: Text[]): TextGroup[] => {
 
 interface GenerationOptions {
     emphasizesInvisibleTexts: boolean;
+    format?: 'markdown' | 'scrapbox';
 }
 
 export default class PDFExposer {
@@ -66,21 +67,33 @@ export default class PDFExposer {
         });
     }
 
-    generateMarkdown(options: GenerationOptions = {
+    generateText(options: GenerationOptions = {
         emphasizesInvisibleTexts: false,
+        format: 'markdown',
     }) {
         if (this.isInitializationDone) {
-            let markdown = '';
+            let text = '';
             for (const [i, textGroups] of this.textGroupsArray.entries()) {
-                markdown += `## Page ${i+1}:\n\n`;
-                const strings = textGroups.map(group =>
-                    options.emphasizesInvisibleTexts && group.color === 'invisible'
-                        ? ` **${group.texts.join('')}** `
-                        : group.texts.join('')
-                );
-                markdown += strings.join('') + '\n\n';
+                if (options.format === 'markdown') {
+                    text += `## Page ${i+1}:\n\n`;
+                    const strings = textGroups.map(group =>
+                        options.emphasizesInvisibleTexts && group.color === 'invisible'
+                            ? ` **${group.texts.join('')}** `
+                            : group.texts.join('')
+                    );
+                    text += strings.join('') + '\n\n';
+                }
+                if (options.format === 'scrapbox') {
+                    text += `[** Page ${i+1}:]\n`;
+                    const strings = textGroups.map(group =>
+                        options.emphasizesInvisibleTexts && group.color === 'invisible'
+                            ? `[* ${group.texts.join('')}]`
+                            : group.texts.join('')
+                    );
+                    text += strings.join('') + '\n\n';
+                }
             }
-            return markdown;
+            return text;
         }
         throw 'Please run init() method first.';
     }
