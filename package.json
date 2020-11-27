@@ -1,6 +1,6 @@
 {
   "name": "@hideo54/pdf-exposer",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Extracts text groups from given PDF file.",
   "main": "dist/pdf-exposer.js",
   "types": "dist/pdf-exposer.d.ts",
@@ -13,11 +13,11 @@
   "author": "hideo54",
   "license": "MIT",
   "dependencies": {
+    "@slack/web-api": "^5.14.0",
+    "@types/node": "^14.14.10",
     "pdf2json": "^1.2.0"
   },
   "devDependencies": {
-    "@slack/web-api": "^5.8.0",
-    "@types/node": "^13.11.1",
     "typescript": "^3.8.3"
   },
   "publishConfig": {
