@@ -1,6 +1,6 @@
 {
   "name": "@hideo54/pdf-exposer",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Extracts text groups from given PDF file.",
   "main": "dist/pdf-exposer.js",
   "types": "dist/pdf-exposer.d.ts",
